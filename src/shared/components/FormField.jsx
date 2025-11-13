@@ -18,7 +18,7 @@ export function FormField({
                 id={id}
                 type={type}
                 value={value}
-                onChange={e => onchange(e.target.value)}
+                onChange={e => onChange(e.target.value)}
                 disabled={disabled}
                 aria-invalid={!!error}
                 aria-describedby={error ? `${id}-error` : undefined}
