@@ -37,7 +37,6 @@ const validateVerificationCode = (code) => {
 
 const validatePassword = (password) => {
     if (!password) return '请输入密码';
-    if (password.length < 8) return '密码至少8位';
     if (!/^\d{6}$/.test(password)) {
         return '密码需为6位数字';
     }

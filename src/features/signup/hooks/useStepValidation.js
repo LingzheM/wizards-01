@@ -1,28 +1,25 @@
 import { useState } from "react";
-import { STEP_FIELDS } from "../utils/constants";
-import * as validators from "../utils/validators";
+import {STEP_VALIDATORS} from "../utils/validators";
 
 export function useStepValidation(formData) {
     const [errors, setErrors] = useState({});
 
     // 校验单个步骤
     const validateStep = (stepNum) => {
-        const fields = STEP_FIELDS[stepNum] || [];
-        const newErrors = {};
+        // 获取该step所需要的验证
+        const validator = STEP_VALIDATORS[stepNum];
 
-        fields.forEach(field => {
-            const validator = validators[`validate${capitalize(field)}`];
-            if (validator) {
-                const error = validator(formData[field]);
-                if (error) newErrors[field] = error;
-            }
-        });
+        if (!validator) {
+            setErrors({});
+            return true;
+        }
 
+        const newErrors = validator(formData) || {};
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    // 清楚某个字段的错误
+    // 清除某个字段的错误
     const clearError = (field) => {
         setErrors(prev => {
             const updated = { ...prev };
@@ -32,8 +29,4 @@ export function useStepValidation(formData) {
     };
 
     return { errors, validateStep, clearError };
-}
-
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
 }
