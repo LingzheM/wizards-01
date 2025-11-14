@@ -1,5 +1,3 @@
-import { ca, tr } from "zod/locales";
-
 const STORAGE_KEY = 'signup_draft';
 const STEP_KEY = 'signup_current_step';
 
