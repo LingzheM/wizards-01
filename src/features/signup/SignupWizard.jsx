@@ -106,19 +106,19 @@ export function SignupWizard() {
         clearDraft();
     }
 
-    // const handleNext = () => {
-    //     if (navigation.confirmed) return;
+    const handleNext = () => {
+        if (navigation.confirmed) return;
 
-    //     if (isReviewStep) {
-    //         handleFinalConfirm();
-    //         return;
-    //     }
-    //     navigation.goNext((step) => validateStep(step));
-    // }
+        if (isReviewStep) {
+            handleFinalConfirm();
+            return;
+        }
+        navigation.goNext((step) => validateStep(step));
+    }
 
-    // const handleBack = () => {
-    //     navigation.goBack();
-    // }
+    const handleBack = () => {
+        navigation.goBack();
+    }
 
     const clearInitialError = (field) => {
         setInitialErrors((prev) => {
@@ -231,7 +231,7 @@ export function SignupWizard() {
             return (
 
                 <StepActions
-                    showBack={false}
+                    showBack={showBack}
                     onBack={handleMethodBack}
                     onNext={handleMethodNext}
                     nextLabel="继续填写"
@@ -243,7 +243,7 @@ export function SignupWizard() {
 
         return (
             <StepActions
-                showBack={false}
+                showBack={showBack}
                 onBack={handleBack}
                 onNext={handleNext}
                 nextLabel={nextLabel}
@@ -253,12 +253,12 @@ export function SignupWizard() {
         );
     }
 
-    // const nextLabel = navigation.confirmed ? '已完成' : isReviewStep ? '确认提交' : navigation.isPatching ? '保存并前进' : '下一步';
+    const nextLabel = navigation.confirmed ? '已完成' : isReviewStep ? '确认提交' : navigation.isPatching ? '保存并前进' : '下一步';
 
-    // const showBack = navigation.step > 1 && !isReviewStep;
+    const showBack = navigation.step > 1 && !isReviewStep;
 
-    // const isBackDisabled = navigation.confirmed || navigation.isPatching;
-    // const isNextDisabled = navigation.confirmed;
+    const isBackDisabled = navigation.confirmed || navigation.isPatching;
+    const isNextDisabled = navigation.confirmed;
 
     return (
         <div className='max-w-3xl mx-auto p-6 bg-white shadow rounded-lg'>

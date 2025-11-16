@@ -3,7 +3,7 @@ import { METHOD_LABELS } from "../utils/constants";
 //export function MethodSelectionStep({ formData, selectMethod, errors, clearError, disabled }) {
 export function MethodSelectStep({currentMethod, onSelect, loading, validationError, fetchError}) {
     const handleSelect = (method) => {
-        if (disabled) return;
+        // if (disabled) return;
         //const clearedFields = selectMethod(method);
         //clearedFields.forEach(field => clearError(field));
 
