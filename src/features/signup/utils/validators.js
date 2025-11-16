@@ -7,7 +7,7 @@ const required = (value, message) => {
     return null;
 }
 
-const validateEmail = (email) => {
+export const validateEmail = (email) => {
     if (!email) return '请输入邮箱';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return '邮箱格式不正确';
@@ -26,7 +26,8 @@ const validatePostalCode = (postalCode) => {
     return null;
 };
 
-const validateVerificationCode = (code) => {
+// 验证码校验
+export const validateVerificationCode = (code) => {
     if (!code) return '请输入验证码';
     if (!/^\d{6}$/.test(code)) {
         return '验证码需为6位数字';
@@ -47,12 +48,6 @@ const validatePassword = (password) => {
 export const STEP_VALIDATORS = {
     1: (formData) => {
         const errors = {};
-        const methodError = required(formData.method, '请选择注册方式');
-        if (methodError) errors.method = methodError;
-        return errors;
-    },
-    2: (formData) => {
-        const errors = {};
         const nationalityError = required(formData.nationality, '请输入国籍');
         if (nationalityError) errors.nationality = nationalityError;
         
@@ -61,7 +56,7 @@ export const STEP_VALIDATORS = {
         
         return errors;
     },
-    3: (formData) => {
+    2: (formData) => {
         const errors = {};
         const lastNameError = required(formData.lastName, '请输入姓');
         if (lastNameError) errors.lastName = lastNameError;
@@ -77,7 +72,7 @@ export const STEP_VALIDATORS = {
 
         return errors;
     },
-    4: (formData) => {
+    3: (formData) => {
         const errors = {};
 
         const postalError = validatePostalCode(formData.postalCode);
@@ -94,7 +89,7 @@ export const STEP_VALIDATORS = {
 
         return errors;
     },
-    5: (formData) => {
+    4: (formData) => {
         const errors = {};
 
         const companyNameError = required(formData.companyName, '请输入公司名称');
@@ -108,7 +103,7 @@ export const STEP_VALIDATORS = {
 
         return errors;
     },
-    6: (formData) => {
+    5: (formData) => {
         const errors = {};
 
         const occupationError = required(formData.occupationType, '请选择职业种类');
@@ -119,18 +114,7 @@ export const STEP_VALIDATORS = {
 
         return errors;
     },
-    7: (formData) => {
-        const errors = {};
-
-        const emailError = validateEmail(formData.email);
-        if (emailError) errors.email = emailError;
-
-        const verificationError = validateVerificationCode(formData.verificationCode);
-        if (verificationError) errors.verificationCode = verificationError;
-
-        return errors;
-    },
-    8: (formData) => {
+    6: (formData) => {
         const errors = {};
 
         const passwordError = validatePassword(formData.password);

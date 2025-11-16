@@ -2,44 +2,36 @@
 export const STEPS = [
     {
         id: 1,
-        title: '注册方式',
-        section: 'method',
-    },
-    {
-        id: 2,
         title: '国籍与在住',
         section: 'residency',
     },
     {
-        id: 3,
+        id: 2,
         title: '个人信息',
-        section: 'perssonal',
+        section: 'personal',
     },
     {
-        id: 4,
+        id: 3,
         title: '住址信息',
         section: 'address',
     },
     {
-        id: 5,
+        id: 4,
         title: '公司信息',
         section: 'company',
     },
     {
-        id: 6,
+        id: 5,
         title: '职业与保险',
         section: 'employment'
     },
-        {
-        id: 7,
-        title: '联系方式',
-        section: 'contact'
-    },    {
-        id: 8,
+    {
+        id: 6,
         title: '安全设置',
         section: 'security'
-    },    {
-        id: 9,
+    },    
+    {
+        id: 7,
         title: '信息确认',
         section: 'review'
     },
@@ -75,18 +67,7 @@ export const INSURANCE_OPTIONS = [
 export const REVIEW_SECTIONS = [
     {
         step: 1,
-        title: '注册方式',
-        fields: [
-            {
-                key: 'method',
-                label: '注册方式',
-                formatter: (value) => METHOD_LABELS[value] || ''
-            }
-        ]
-    },
-    {
-        step: 2,
-        title: '国际与在住',
+        title: '国籍与在住',
         fields: [
             {
                 key: 'nationality',
@@ -99,7 +80,7 @@ export const REVIEW_SECTIONS = [
         ]
     },
     {
-        step: 3,
+        step: 2,
         title: '个人信息',
         section: 'personal',
         fields: [
@@ -117,7 +98,7 @@ export const REVIEW_SECTIONS = [
         ]
     },
     {
-        step: 4,
+        step: 3,
         title: '住址信息',
         fields: [
             { key: 'postalCode', label: '邮编' },
@@ -127,7 +108,7 @@ export const REVIEW_SECTIONS = [
         ]
     },
     {
-        step: 5,
+        step: 4,
         title: '公司信息',
         fields: [
             { key: 'companyName', label: '公司名称' },
@@ -136,7 +117,7 @@ export const REVIEW_SECTIONS = [
         ]
     },
     {
-        step: 6,
+        step: 5,
         title: '职业与保险',
         fields: [
             { key: 'occupationType', label: '职业种类' },
@@ -144,15 +125,7 @@ export const REVIEW_SECTIONS = [
         ]
     },
     {
-        step: 7,
-        title: '联系方式',
-        fields: [
-            { key: 'email', label: '邮箱' },
-            { key: 'verificationCode', label: '验证码' }
-        ]
-    },
-    {
-        step: 8,
+        step: 6,
         title: '安全设置',
         fields: [
             { key: 'password', label: '登录密码' }

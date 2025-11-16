@@ -1,4 +1,4 @@
-import { METHOD_LABELS, REVIEW_SECTIONS } from "../utils/constants";
+import { REVIEW_SECTIONS } from "../utils/constants";
 
 const maskPassword = (value) => (value ? '******' : '未设置');
 
@@ -27,9 +27,7 @@ export function ReviewStep({ formData, onEdit, confirmed }) {
                             {section.fields.map((field) => {
                                 let value = formData[field.key];
 
-                                if (field.key === 'method') {
-                                    value = METHOD_LABELS[value] || '';
-                                } else if (field.key === 'password') {
+                                if (field.key === 'password') {
                                     value = maskPassword(value);
                                 } else if (field.formatter) {
                                     value = field.formatter(value);

@@ -48,7 +48,12 @@ export function useSignupForm() {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const selectMethod = (method) => {
+    const selectMethod = (method, prefillData) => {
+        if (!method) {
+            setFormData(prev => ({ ...prev, method: ''}));
+            return ['method'];
+        }
+
         const updates = { method };
 
         if (method === 'A') {
@@ -62,8 +67,9 @@ export function useSignupForm() {
         }
 
         if (method === 'B') {
-            setFormData(prev => ({ ...prev, ...METHOD_B_PREFILL, ...updates }));
-            return ['method', ...Object.keys(METHOD_B_PREFILL)];
+            const prefill = prefillData || METHOD_B_PREFILL;
+            setFormData(prev => ({ ...prev, ...prefill, ...updates }));
+            return ['method', ...Object.keys(prefill)];
         }
 
         setFormData(prev => ({ ...prev, ...updates }));
