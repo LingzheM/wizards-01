@@ -1,9 +1,9 @@
-import FormField from '../../../shared/components/FormField';
+import { FormField } from "../../../shared/components/FormField";
 
 export function EmailVerificationScreen({ formData, updateField, errors, clearError }) {
     return (
         <div>
-            <p className='text-sm text-gray-600 mb-4'>
+            <p className="text-sm text-gray-600 mb-4">
                 请先输入用于注册的邮箱地址并完成验证码验证。验证通过后可继续选择注册方式。
             </p>
             <FormField
@@ -14,7 +14,7 @@ export function EmailVerificationScreen({ formData, updateField, errors, clearEr
                     updateField('email', val);
                     clearError('email');
                 }}
-                errors={errors.email}
+                error={errors.email}
                 placeholder="example@email.com"
             />
 
@@ -25,7 +25,8 @@ export function EmailVerificationScreen({ formData, updateField, errors, clearEr
                     updateField('verificationCode', val);
                     clearError('verificationCode');
                 }}
-                errors={errors.verificationCode}
+                error={errors.verificationCode}
+                placeholder="请输入6位验证码"
             />
         </div>
     );

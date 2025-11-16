@@ -17,6 +17,7 @@ import {EmailVerificationScreen} from './components/EmailVerificationScreen';
 import { fetchBasicInfo } from './utils/api';
 import { validateEmail, validateVerificationCode } from './utils/validators';
 import MethodSelectStep from './components/MethodSelectionStep';
+import { fa } from 'zod/locales';
 
 const STEP_COMPONENTS = {
     1: ResidencyStep,
@@ -230,7 +231,7 @@ export function SignupWizard() {
             return (
 
                 <StepActions
-                    showBack={showBack}
+                    showBack={false}
                     onBack={handleMethodBack}
                     onNext={handleMethodNext}
                     nextLabel="继续填写"
@@ -242,7 +243,7 @@ export function SignupWizard() {
 
         return (
             <StepActions
-                showBack={showBack}
+                showBack={false}
                 onBack={handleBack}
                 onNext={handleNext}
                 nextLabel={nextLabel}
