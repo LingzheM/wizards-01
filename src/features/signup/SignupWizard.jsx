@@ -17,7 +17,14 @@ import {EmailVerificationScreen} from './components/EmailVerificationScreen';
 import { fetchBasicInfo } from './utils/api';
 import { validateEmail, validateVerificationCode } from './utils/validators';
 import MethodSelectStep from './components/MethodSelectionStep';
-import { fa } from 'zod/locales';
+
+const safeParseJSON = async (response) => {
+    try {
+        return await response.json();
+    } catch {
+        return null;
+    }
+}
 
 const STEP_COMPONENTS = {
     1: ResidencyStep,
@@ -34,8 +41,12 @@ export function SignupWizard() {
     const { errors, validateStep, clearError } = useStepValidation(formData);
     const navigation = useStepNavigation(STEPS.length);
 
+
+    //
+    const [isEmailVerified, setIsEmailVerified] = useState(() => Boolean(formData.email && formData.verificationCode));
+
     const determineInitialStage = () => {
-        if (!formData.email || !formData.verificationCode) {
+        if (!formData.email || !formData.verificationCode || !isEmailVerified) {
             return 'email';
         }
         if (!formData.method) {
@@ -50,15 +61,22 @@ export function SignupWizard() {
     const [methodFetchError, setMethodFetchError] = useState('');
     const [methodLoading, setMethodLoading] = useState(false);
 
+    const [isSendingCode, setIsSendingCode] = useState(false);
+    const [sendError, setSendError] = useState('');
+    const [sendSuccess, setSendSuccess] = useState('');
+    const [isVerifyingCode, setIsVerifyingCode] = useState(false);
+    const [verificationError, setVerificationError] = useState('');
+    const [verificationSuccess, setVerificationSuccess] = useState('');
+
     useEffect(() => {
-        if (!formData.email || !formData.verificationCode) {
+        if (!formData.email || !formData.verificationCode || !isEmailVerified) {
             setStage('email');
             return;
         }
         if (!formData.method) {
             setStage('method');
         }
-    }, [formData.email, formData.verificationCode, formData.method]);
+    }, [formData.email, formData.verificationCode, formData.method, isEmailVerified]);
 
     const isReviewStep = navigation.step === STEPS.length;
 
@@ -129,8 +147,8 @@ export function SignupWizard() {
         });
     };
 
-    const handleEmailNext = () => {
-        if (navigation.confirmed) return;
+    const handleEmailNext = async () => {
+        if (navigation.confirmed || isVerifyingCode) return;
         const emailError = validateEmail(formData.email);
         const codeError = validateVerificationCode(formData.verificationCode);
 
@@ -140,10 +158,46 @@ export function SignupWizard() {
 
         setInitialErrors(nextErrors);
 
-        if (Object.keys(nextErrors).length === 0) {
+        if (Object.keys(nextErrors).length > 0) {
+            return;
+        }
+
+        setVerificationError('');
+        setVerificationSuccess('');
+        setIsVerifyingCode(true);
+
+        try {
+            const response = await fetch('/api/channel-users/registrations/vefify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    loginId: formData.email,
+                    verificationCode: formData.verificationCode
+                })
+            });
+            
+            const data = await safeParseJSON(response);
+            const verifiedFlag = response.status === 200;
+            if (!response.ok) {
+                throw new Error(data?.message || '验证码失败, 请重试');
+            }
+            
+
+            setVerificationSuccess('邮箱验证成功');
+            setIsEmailVerified(true);
             setStage('method');
+        } catch(error) {
+            setVerificationError(error?.message || '验证码失败, 请稍后重试');
+        } finally {
+            setIsVerifyingCode(false);
         }
     };
+
+    const handleSendVerificationCode = async () => {
+        
+    }
 
     const handleMethodSelect = async (method) => {
         if (!method || navigation.confirmed) return;
