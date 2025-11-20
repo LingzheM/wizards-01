@@ -18,6 +18,8 @@ import { fetchBasicInfo } from './utils/api';
 import { validateEmail, validateVerificationCode } from './utils/validators';
 import MethodSelectStep from './components/MethodSelectionStep';
 
+const API_BASE_URL = 'http://localhost:3000';
+
 const safeParseJSON = async (response) => {
     try {
         return await response.json();
@@ -167,7 +169,7 @@ export function SignupWizard() {
         setIsVerifyingCode(true);
 
         try {
-            const response = await fetch('/api/channel-users/registrations/vefify', {
+            const response = await fetch(`${API_BASE_URL}/api/channel-users/registrations/verify`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -196,7 +198,41 @@ export function SignupWizard() {
     };
 
     const handleSendVerificationCode = async () => {
+        if (navigation.confirmed || isSendingCode) return;
+        const emailError = validateEmail(formData.email);
         
+        if (emailError) {
+            setInitialErrors((prev) => ({ ...prev, email: emailError }));
+            return;
+        }
+
+        clearInitialError('email');
+        setSendError('');
+        setSendSuccess('');
+        setVerificationError('');
+        setVerificationSuccess('');
+        setIsEmailVerified(false);
+        setIsSendingCode(true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/channel-users/registrations`, {
+                'method': 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ loginId: formData.email })
+            });
+
+            const data = await safeParseJSON(response);
+            if (!response.ok) {
+                throw new Error(data?.message || '验证码发送失败, 请重试');
+            }
+            setSendSuccess(data?.message || '验证码已发送, 请查收邮箱');
+        } catch (error) {
+            setSendError(error?.message || '验证码发送失败, 请稍后再试');
+        } finally {
+            setIsSendingCode(false);
+        }
     }
 
     const handleMethodSelect = async (method) => {
@@ -245,12 +281,32 @@ export function SignupWizard() {
 
     const renderContent = () => {
         if (stage === 'email') {
+            const updateEmailStageField = (field, value) => {
+
+                updateField(field, value);
+                if (field === 'email') {
+                    setSendError('');
+                    setSendSuccess('');
+                }
+                if (field === 'email' || field === 'verificationCode') {
+                    setVerificationError('');
+                    setVerificationSuccess('');
+                    setIsEmailVerified(false);
+                }
+            }; 
             return (
                 <EmailVerificationScreen
                     formData={formData}
-                    updateField={updateField}
+                    updateField={updateEmailStageField}
                     errors={initialErrors}
                     clearError={clearInitialError}
+                    onSendCode={handleSendVerificationCode}
+                    isSendingCode={isSendingCode}
+                    sendError={sendError}
+                    sendSuccess={sendSuccess}
+                    verificationError={verificationError}
+                    verificationSuccess={verificationSuccess}
+                    isVerifying={isVerifyingCode}
                 />
             );
         }
@@ -275,9 +331,9 @@ export function SignupWizard() {
                     showBack={false}
                     onBack={() => {}}
                     onNext={handleEmailNext}
-                    nextLabel="验证并继续"
+                    nextLabel={isVerifyingCode ? '验证中...' : '验证并继续'}
                     isBackDisabled={false}
-                    isNextDisabled={false}
+                    isNextDisabled={isVerifyingCode}
                 />
             );
         }
